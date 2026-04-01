@@ -1,0 +1,9 @@
+warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+CUDA-fused xIELU not available (No module named 'xielu') – falling back to a Python version.
+For CUDA xIELU (experimental), `pip install git+https://github.com/nickjbrowning/XIELU`
+Loading weights:   0%|          | 0/451 [00:00<?, ?it/s]Loading weights:  62%|██████▏   | 278/451 [00:00<00:00, 2768.61it/s]Loading weights: 100%|██████████| 451/451 [00:00<00:00, 2551.50it/s]
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 68}.
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:05<00:00,  5.06s/it]                                             100%|██████████| 1/1 [00:05<00:00,  5.06s/it]                                             100%|██████████| 1/1 [00:05<00:00,  5.06s/it]100%|██████████| 1/1 [00:05<00:00,  5.77s/it]
+{'loss': '1.574', 'grad_norm': '0.1756', 'learning_rate': '0', 'entropy': '1.188', 'num_tokens': '4096', 'mean_token_accuracy': '0.6596', 'epoch': '0.03226'}
+{'train_runtime': '5.769', 'train_samples_per_second': '0.693', 'train_steps_per_second': '0.173', 'train_loss': '1.574', 'epoch': '0.03226'}
