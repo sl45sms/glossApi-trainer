@@ -1,58 +1,0 @@
-warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-CUDA-fused xIELU not available (No module named 'xielu') – falling back to a Python version.
-For CUDA xIELU (experimental), `pip install git+https://github.com/nickjbrowning/XIELU`
-Loading weights:   0%|          | 0/451 [00:00<?, ?it/s]Loading weights:  80%|███████▉  | 360/451 [00:00<00:00, 3591.01it/s]Loading weights: 100%|██████████| 451/451 [00:00<00:00, 3665.88it/s]
-Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 123 examples [00:00, 7416.93 examples/s]
-Warning: The cache directory for DeepSpeed Triton autotune, /users/p-skarvelis/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
-Tokenizing train dataset (num_proc=12):   0%|          | 0/123 [00:00<?, ? examples/s]Tokenizing train dataset (num_proc=12):   2%|▏         | 3/123 [00:00<00:34,  3.50 examples/s]Tokenizing train dataset (num_proc=12):  18%|█▊        | 22/123 [00:01<00:03, 28.07 examples/s]Tokenizing train dataset (num_proc=12):  27%|██▋       | 33/123 [00:01<00:02, 37.90 examples/s]Tokenizing train dataset (num_proc=12):  35%|███▍      | 43/123 [00:01<00:01, 44.29 examples/s]Tokenizing train dataset (num_proc=12):  43%|████▎     | 53/123 [00:01<00:01, 48.98 examples/s]Tokenizing train dataset (num_proc=12):  54%|█████▍    | 67/123 [00:01<00:00, 58.90 examples/s]Tokenizing train dataset (num_proc=12):  63%|██████▎   | 77/123 [00:01<00:00, 48.12 examples/s]Tokenizing train dataset (num_proc=12):  79%|███████▉  | 97/123 [00:02<00:00, 68.53 examples/s]Tokenizing train dataset (num_proc=12):  87%|████████▋ | 107/123 [00:02<00:00, 69.59 examples/s]Tokenizing train dataset (num_proc=12):  96%|█████████▌| 118/123 [00:02<00:00, 73.06 examples/s]Tokenizing train dataset (num_proc=12): 100%|██████████| 123/123 [00:02<00:00, 49.97 examples/s]
-The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 68}.
-  0%|          | 0/1 [00:00<?, ?it/s]Traceback (most recent call last):
-  File "/users/p-skarvelis/glossApi-Trainer/scripts/sft_train_glossapi.py", line 97, in <module>
-    main(script_args, training_args, model_args)
-  File "/users/p-skarvelis/glossApi-Trainer/scripts/sft_train_glossapi.py", line 88, in main
-    trainer.train()
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/transformers/trainer.py", line 1424, in train
-    return inner_training_loop(
-           ^^^^^^^^^^^^^^^^^^^^
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/transformers/trainer.py", line 1506, in _inner_training_loop
-    self._run_epoch(
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/transformers/trainer.py", line 1734, in _run_epoch
-    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/trl/trainer/sft_trainer.py", line 1379, in training_step
-    return super().training_step(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/transformers/trainer.py", line 1934, in training_step
-    self.accelerator.backward(loss, **kwargs)
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/accelerate/accelerator.py", line 2838, in backward
-    loss.backward(**kwargs)
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/torch/_tensor.py", line 631, in backward
-    torch.autograd.backward(
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/torch/autograd/__init__.py", line 381, in backward
-    _engine_run_backward(
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/torch/autograd/graph.py", line 869, in _engine_run_backward
-    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/torch/utils/checkpoint.py", line 1177, in unpack_hook
-    frame.check_recomputed_tensors_match(gid)
-  File "/users/p-skarvelis/glossApi-Trainer/.venv-uenv/lib/python3.12/site-packages/torch/utils/checkpoint.py", line 921, in check_recomputed_tensors_match
-    raise CheckpointError(
-torch.utils.checkpoint.CheckpointError: torch.utils.checkpoint: Recomputed values for the following tensors have different metadata than during the forward pass.
-tensor at position 37:
-saved metadata: {'shape': torch.Size([1, 32, 1024]), 'dtype': torch.float32, 'device': device(type='cuda', index=2)}
-recomputed metadata: {'shape': torch.Size([1, 32, 1024, 1]), 'dtype': torch.float32, 'device': device(type='cuda', index=2)}
-tensor at position 39:
-saved metadata: {'shape': torch.Size([2]), 'dtype': torch.uint64, 'device': device(type='cuda', index=2)}
-recomputed metadata: {'shape': torch.Size([]), 'dtype': torch.int64, 'device': device(type='cuda', index=2)}
-tensor at position 40:
-saved metadata: {'shape': torch.Size([]), 'dtype': torch.uint64, 'device': device(type='cuda', index=2)}
-recomputed metadata: {'shape': torch.Size([]), 'dtype': torch.int64, 'device': device(type='cuda', index=2)}
-.
-
-Tip: To see a more detailed error message, either pass `debug=True` to
-`torch.utils.checkpoint.checkpoint(...)` or wrap the code block
-with `with torch.utils.checkpoint.set_checkpoint_debug_enabled(True):` to
-enable checkpoint‑debug mode globally.
-
-  0%|          | 0/1 [00:06<?, ?it/s]
