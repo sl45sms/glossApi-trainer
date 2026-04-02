@@ -1,4 +1,7 @@
 #!/bin/bash
+# this script stages the dataset for the GlossAPI trainer 
+# by copying and optionally splitting a source dataset 
+# into train and validation sets in the destination directory.
 
 set -euo pipefail
 

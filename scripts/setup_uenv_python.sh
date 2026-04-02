@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This script sets up a Python virtual environment inside a specified uenv image,
+# and installs the necessary dependencies for training and inference with the Apertus model.
+# It also clones the Apertus finetuning recipes repository if it doesn't already exist.
+
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

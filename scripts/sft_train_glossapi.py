@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+# This script trains a GlossAPI model using the SFTTrainer.
+# It supports loading datasets from local files or the Hugging Face Hub,
+# and can handle both training and evaluation splits.
+
+
 import os
 from pathlib import Path
 from typing import Optional
