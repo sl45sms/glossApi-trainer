@@ -3,7 +3,7 @@
 ## 1) Stage dataset with validation split
 
 ```bash
-VALIDATION_ROWS=24 bash scripts/stage_glossapi_dataset.sh
+SOURCE_DATASET=/users/p-skarvelis/GSDG/outputs/synthetic_glossAPI_Sxolika_vivlia_Qwen_Qwen3.5-397B-A17B-FP8_manual_job1700178.jsonl VALIDATION_ROWS=24 bash scripts/stage_glossapi_dataset.sh
 ```
 
 ## 2) Submit proper training run
@@ -11,40 +11,24 @@ VALIDATION_ROWS=24 bash scripts/stage_glossapi_dataset.sh
 ```bash
 bash scripts/submit_apertus_lora_proper.sh
 ```
-
-## 3) Submit proper run with explicit output directories
+you can optionally specify output directories with environment variables:
 
 ```bash
-OUTPUT_DIR=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_v2 \
-MERGED_OUTPUT_DIR=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_v2_merged \
-bash scripts/submit_apertus_lora_proper.sh
+OUTPUT_DIR=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper 
+MERGED_OUTPUT_DIR=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_merged 
 ```
 
-## 4) Submit and actively track job status
+## 3) Verify output directories
 
 ```bash
-jobid=$(OUTPUT_DIR=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_v2 \
-MERGED_OUTPUT_DIR=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_v2_merged \
-bash scripts/submit_apertus_lora_proper.sh | awk '{print $4}') && \
-echo "JOBID=$jobid" && \
-while squeue -h -j "$jobid" | grep -q .; do
-	squeue -h -j "$jobid" -o 'STATE=%T ELAPSED=%M REASON=%R'
-	sleep 30
-done && \
-sacct -j "$jobid" --format=JobID,JobName%30,State,ExitCode,Elapsed%20 -P
+ls ${SCRATCH}/glossapi-trainer/output/apertus_lora_proper
+ls ${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_merged
 ```
 
-## 5) Verify output directories
+## 4) Run inference smoke test on the merged model
 
 ```bash
-ls ${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_v2
-ls ${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_v2_merged
-```
-
-## 6) Run inference smoke test on the merged model
-
-```bash
-jobid=$(MODEL_DIR=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_v2_merged \
+jobid=$(MODEL_DIR=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_merged \
 sbatch --parsable scripts/run_merged_inference_clariden.sbatch) && \
 echo "JOBID=$jobid" && \
 while squeue -h -j "$jobid" | grep -q .; do
