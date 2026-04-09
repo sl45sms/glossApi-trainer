@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH -A a0140
-#SBATCH --partition=debug
+#SBATCH --partition=normal
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gpus-per-node=4
 #SBATCH --cpus-per-task=72
 #SBATCH --mem=128G
-#SBATCH --time=00:30:00
+#SBATCH --time=06:30:00
 #SBATCH --job-name=apertus-lora-clr
 #SBATCH --output=%x-%j.out
 
@@ -34,7 +34,8 @@ export HF_HOME="${HF_HOME:-${SCRATCH}/hf}"
 export HF_DATASETS_CACHE="${HF_DATASETS_CACHE:-${SCRATCH}/hf_datasets}"
 export TRITON_CACHE_DIR="${TRITON_CACHE_DIR:-${SCRATCH}/triton-cache}"
 export TOKENIZERS_PARALLELISM="false"
-export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
+export FORCE_CUDA_VISIBLE_DEVICES="${FORCE_CUDA_VISIBLE_DEVICES:-0}"
+export ATTN_IMPLEMENTATION="${ATTN_IMPLEMENTATION:-eager}"
 export TRAIN_MAX_STEPS="${TRAIN_MAX_STEPS-1}"
 export TRAIN_BATCH_SIZE="${TRAIN_BATCH_SIZE-1}"
 export TRAIN_MAX_LENGTH="${TRAIN_MAX_LENGTH-1024}"
@@ -65,13 +66,17 @@ mkdir -p "${OUTPUT_DIR}" "${HF_HOME}" "${HF_DATASETS_CACHE}" "${TRITON_CACHE_DIR
 
 uenv run "${UENV_IMAGE}" --view="${UENV_VIEW}" -- bash -lc '
 set -euo pipefail
+export CUDA_VISIBLE_DEVICES="${FORCE_CUDA_VISIBLE_DEVICES}"
 source "${VENV_DIR}/bin/activate"
 cd "${REPO_ROOT}"
+echo "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}"
+echo "ATTN_IMPLEMENTATION=${ATTN_IMPLEMENTATION}"
 cmd=(python "${REPO_ROOT}/scripts/sft_train_glossapi.py"
 	--config "${TRAIN_CONFIG}"
 	--dataset_name "${DATASET_PATH}"
 	--output_dir "${OUTPUT_DIR}"
-	--gradient_checkpointing "${TRAIN_GRADIENT_CHECKPOINTING}")
+	--gradient_checkpointing "${TRAIN_GRADIENT_CHECKPOINTING}"
+	--attn_implementation "${ATTN_IMPLEMENTATION}")
 
 if [[ -n "${TRAIN_MAX_STEPS}" ]]; then
 	cmd+=(--max_steps "${TRAIN_MAX_STEPS}")
