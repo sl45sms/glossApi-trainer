@@ -14,6 +14,11 @@ This repository now includes a minimal Clariden starter scaffold:
 - `scripts/run_apertus_lora_clariden.sbatch` runs the first single-process LoRA smoke test on a full Clariden node
 - `scripts/submit_apertus_lora_proper.sh` submits a validation-enabled non-smoke LoRA run
 - `scripts/run_merged_inference_clariden.sbatch` runs one merged-model inference prompt on Clariden
+- `scripts/run_dual_model_ui.sh` launches a side-by-side UI on port `8631` for the base 8B model and a merged local model
+- `scripts/run_dual_model_ui_clariden.sbatch` submits the dual-model UI as a long-running Clariden job
+- `scripts/srun_dual_model_ui_clariden.sh` requests an interactive Clariden allocation and starts the same UI there
+- `scripts/submit_dual_model_ui.sh` provides a one-command batch submission path for the dual-model UI
+- `scripts/forward_dual_model_ui_from_job.sh` forwards login-node port `8631` to the compute node of a running UI job without requiring reverse SSH from the node
 - `scripts/run_apertus_full_clariden.sbatch` runs single-node 4-GPU full fine-tuning with `accelerate`
 - `configs/` contains repository-specific training configs and the single-node ZeRO-3 config
 
@@ -41,6 +46,43 @@ Merged-model inference smoke test:
 
 ```bash
 sbatch scripts/run_merged_inference_clariden.sbatch
+```
+
+Dual-model UI on port `8631`:
+
+```bash
+APERTUS_MERGED_MODEL=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_merged \
+APERTUS_BASE_DEVICE=cuda:0 \
+APERTUS_MERGED_DEVICE=cuda:1 \
+APERTUS_BASE_DTYPE=float32 \
+APERTUS_MERGED_DTYPE=bfloat16 \
+bash scripts/run_dual_model_ui.sh
+```
+
+Dual-model UI on a Clariden compute node:
+
+```bash
+bash scripts/submit_dual_model_ui.sh
+```
+
+with explicit merged model path:
+
+```bash
+APERTUS_MERGED_MODEL=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_merged \
+bash scripts/submit_dual_model_ui.sh
+```
+
+If reverse SSH from the compute node is unavailable, forward the UI port from the login node once the job is running:
+
+```bash
+bash scripts/forward_dual_model_ui_from_job.sh JOB_ID
+```
+
+or interactively:
+
+```bash
+APERTUS_MERGED_MODEL=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_merged \
+bash scripts/srun_dual_model_ui_clariden.sh
 ```
 
 Proper LoRA training run (with validation and checkpoint selection):
