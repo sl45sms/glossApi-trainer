@@ -54,7 +54,13 @@ if ! python -c "import torch" >/dev/null 2>&1; then
 fi
 
 uv pip install -r "${apertus_repo_dir}/requirements.txt"
-python -m compileall "${repo_root}/scripts"
+	if [[ -f "${repo_root}/UI/requirements.txt" ]]; then
+		uv pip install -r "${repo_root}/UI/requirements.txt"
+	fi
+	python -m compileall "${repo_root}/scripts"
+	if [[ -d "${repo_root}/UI" ]]; then
+		python -m compileall "${repo_root}/UI"
+	fi
 python - <<"PY"
 import torch
 print(f"Using torch {torch.__version__}")
