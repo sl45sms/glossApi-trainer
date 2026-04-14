@@ -28,12 +28,27 @@ ls ${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_merged
 ## 4) Run inference smoke test on the merged model
 
 ```bash
-jobid=$(MODEL_DIR=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_merged \
-sbatch --parsable scripts/run_merged_inference_clariden.sbatch) && \
-echo "JOBID=$jobid" && \
-while squeue -h -j "$jobid" | grep -q .; do
-	squeue -h -j "$jobid" -o 'STATE=%T ELAPSED=%M REASON=%R'
-	sleep 20
-done && \
-sacct -j "$jobid" --format=JobID,JobName%30,State,ExitCode,Elapsed%20 -P
+sbatch --parsable scripts/run_merged_inference_clariden.sbatch
+```
+
+## 5) Launch side-by-side UI on port 8631
+```bash
+JOB_ID=$(ENABLE_UI_REVERSE_TUNNEL=1 \
+APERTUS_BASE_DTYPE=float32 \
+APERTUS_MERGED_DTYPE=bfloat16 \
+bash scripts/submit_dual_model_ui.sh --parsable) && \
+echo "JOBID=$JOB_ID"
+```
+
+if reverse tunnel fails but the job is running, forward the port from the login node to the compute node:
+```bash
+bash scripts/forward_dual_model_ui_from_job.sh JOB_ID
+```
+script closes old local proxy on `8631` if it finds one from a previous run.
+
+## 6) Run the UI on a Clariden node with srun
+
+```bash
+APERTUS_MERGED_MODEL=${SCRATCH}/glossapi-trainer/output/apertus_lora_proper_merged \
+bash scripts/srun_dual_model_ui_clariden.sh
 ```
